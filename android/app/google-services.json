@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1016645142682",
+    "project_id": "floydwarshall-455f5",
+    "storage_bucket": "floydwarshall-455f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016645142682:android:4a7b0bedc4b9e63b33f723",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016645142682-mlqqu273v683o696gjebqr5d0atv3v4e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXi02iV4a6pOx9LaAfk7opo5usaSp3KEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016645142682-mlqqu273v683o696gjebqr5d0atv3v4e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
