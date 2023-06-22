@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:rute_rumah_sakit_brebes/screens/login_screen.dart';
 
 import '../constants/hospitals.dart';
 import '../helpers/floyd_warshall_handler.dart';
@@ -43,10 +44,10 @@ class _SplashState extends State<Splash> {
 
     // Get capture the current user location
     LocationData _locationData = await _location.getLocation();
-    // LatLng currentLatLng =
-    // LatLng(_locationData.latitude!, _locationData.longitude!);
+    LatLng currentLatLng =
+        LatLng(_locationData.latitude!, _locationData.longitude!);
 
-    LatLng currentLatLng = LatLng(-6.8734756,109.0436324);
+    // LatLng currentLatLng = LatLng(-6.8734756,109.0436324);
 
     // Store the user location in sharedPreferences
     sharedPreferences.setDouble('latitude', _locationData.latitude!);
@@ -60,15 +61,36 @@ class _SplashState extends State<Splash> {
 
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const HospitalMap()),
-            (route) => false);
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.black,
-      child: Center(child: Image.asset('assets/image/splash.png')),
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.2),
+            child: Image.asset('assets/icon/hospital3.png'),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: const Text(
+              "Aplikasi Rute Terdekat Kota Brebes",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+      )),
     );
   }
 }

@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:rute_rumah_sakit_brebes/screens/add_hospital_screen.dart';
 import 'package:rute_rumah_sakit_brebes/screens/hospital_table.dart';
+import 'package:rute_rumah_sakit_brebes/screens/login_screen.dart';
 
 import '../constants/hospitals.dart';
 import '../helpers/commons.dart';
@@ -137,7 +140,7 @@ class _HospitalMapState extends State<HospitalMap> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,
                   child: MapboxMap(
-                    accessToken: dotenv.env['MAPBOX_ACCESS_TOKEN'],
+                    accessToken: "sk.eyJ1Ijoid2VsbHlhZGl0YW1hIiwiYSI6ImNsajR1dnJpNjA1bHYzcW81dmNtanRxcWgifQ.dk5MPF-PHkGBI5WIvUnZOA",
                     initialCameraPosition: _initialCameraPosition,
                     onMapCreated: _onMapCreated,
                     onStyleLoadedCallback: _onStyleLoadedCallback,
@@ -166,18 +169,73 @@ class _HospitalMapState extends State<HospitalMap> {
 
               ],
             ),
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.greenAccent),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const RestaurantsTable(),
+            Column(
+              children: [
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: TextButton(
+                //         style: ButtonStyle(
+                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.greenAccent),
+                //         ),
+                //         onPressed: () {
+                //           Navigator.of(context).push(
+                //             MaterialPageRoute(
+                //               builder: (context) => const RestaurantsTable(),
+                //             ),
+                //           );
+                //         },
+                //         child: Text('Daftar Rumah Sakit'),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: TextButton(
+                //         style: ButtonStyle(
+                //           foregroundColor: MaterialStateProperty.all<Color>(Colors.greenAccent),
+                //         ),
+                //         onPressed: () {
+                //           Navigator.of(context).push(
+                //             MaterialPageRoute(
+                //               builder: (context) => const AddHospitalScreen(),
+                //             ),
+                //           );
+                //         },
+                //         child: Text('Tambah Data Rumah Sakit'),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.greenAccent),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const RestaurantsTable(),
+                        ),
+                      );
+                    },
+                    child: Text('Daftar Rumah Sakit'),
                   ),
-                );
-              },
-              child: Text('Daftar Rumah Sakit'),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.greenAccent),
+                  ),
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  },
+                  child: Text('Logout'),
+                ),
+              ],
             )
           ],
         ),
