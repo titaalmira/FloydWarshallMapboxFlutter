@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rute_rumah_sakit_brebes/screens/main_screen.dart';
+import 'package:rute_rumah_sakit_brebes/screens/user_home_screens.dart';
 
 import 'home_management.dart';
 import 'register_screen.dart';
@@ -74,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // You can replace the line below with your navigation logic
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeManagement()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } catch (e) {
       // Registration failed, handle the error

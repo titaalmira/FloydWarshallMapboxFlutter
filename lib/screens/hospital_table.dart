@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rute_rumah_sakit_brebes/screens/detail_hospital_screen.dart';
 
 import '../constants/hospitals.dart';
 
@@ -52,25 +53,25 @@ class _RestaurantsTableState extends State<RestaurantsTable> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CupertinoTextField(
-                prefix: Padding(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Icon(Icons.search),
-                ),
-                padding: EdgeInsets.all(15),
-                placeholder: 'Cari Rumah Sakit',
-                style: TextStyle(color: Colors.white),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-              ),
+              // const CupertinoTextField(
+              //   prefix: Padding(
+              //     padding: EdgeInsets.only(left: 15),
+              //     child: Icon(Icons.search),
+              //   ),
+              //   padding: EdgeInsets.all(15),
+              //   placeholder: 'Cari Rumah Sakit',
+              //   style: TextStyle(color: Colors.white),
+              //   decoration: BoxDecoration(
+              //     color: Colors.black54,
+              //     borderRadius: BorderRadius.all(Radius.circular(5)),
+              //   ),
+              // ),
               const SizedBox(height: 5),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
-                itemCount: hospitals.length,
+                itemCount: listHospitals.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Card(
                     clipBehavior: Clip.antiAlias,
@@ -80,39 +81,48 @@ class _RestaurantsTableState extends State<RestaurantsTable> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CachedNetworkImage(
-                          height: 250,
-                          width: 140,
+                          height: 400,
+                          width: 160,
                           fit: BoxFit.cover,
-                          imageUrl: hospitals[index]['image'],
+                          imageUrl: listHospitals[index].pictureUrl,
                         ),
                         Expanded(
                           child: Container(
-                            height: 250,
+                            height: 400,
                             padding: const EdgeInsets.all(15),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  hospitals[index]['name'],
+                                  listHospitals[index].name,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
                                 ),
-                                Text(hospitals[index]['items']),
+                                Text(listHospitals[index].address),
                                 const Spacer(),
-                                const Text('Waiting time: 2hrs'),
-                                Text(
-                                  'Closes at 10PM',
-                                  style:
-                                      TextStyle(color: Colors.redAccent[100]),
+                                ListTile(
+                                  leading: Icon(Icons.calendar_today),
+                                  contentPadding: EdgeInsets.all(4.0),
+                                  title: Text('Hari Buka'),
+                                  subtitle:
+                                      Text(listHospitals[index].openingDays),
                                 ),
-                                Row(
-                                  children: [
-                                    cardButtons(Icons.call, 'Call'),
-                                    cardButtons(Icons.location_on, 'Map'),
-                                    const Spacer(),
-                                    const Text('2km'),
-                                  ],
+                                ListTile(
+                                  contentPadding: EdgeInsets.all(4.0),
+                                  leading: Icon(Icons.timelapse),
+                                  subtitle: Text(
+                                      "${listHospitals[index].openingTime} - ${listHospitals[index].closingTime}"),
+                                  title: Text("Jam Buka"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => HospitalDetailScreen(hospital: listHospitals[index])),
+                                    );
+                                  },
+                                  child: Text("Detail"),
                                 )
                               ],
                             ),

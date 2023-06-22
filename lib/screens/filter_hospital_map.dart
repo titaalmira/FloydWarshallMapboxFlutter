@@ -13,14 +13,14 @@ import '../helpers/commons.dart';
 import '../helpers/shared_prefs.dart';
 import '../widgets/carousel_card.dart';
 
-class HospitalMap extends StatefulWidget {
-  const HospitalMap({Key? key}) : super(key: key);
+class FilterHospitalMap extends StatefulWidget {
+  const FilterHospitalMap({Key? key}) : super(key: key);
 
   @override
-  State<HospitalMap> createState() => _HospitalMapState();
+  State<FilterHospitalMap> createState() => _HospitalMapState();
 }
 
-class _HospitalMapState extends State<HospitalMap> {
+class _HospitalMapState extends State<FilterHospitalMap> {
   // Mapbox related
   LatLng latLng = getLatLngFromSharedPrefs();
   late CameraPosition _initialCameraPosition;
@@ -42,7 +42,7 @@ class _HospitalMapState extends State<HospitalMap> {
     // Calculate the distance and time from data in SharedPreferences
     for (int index = 0; index < hospitals.length; index++) {
       num distance = getDistanceFromSharedPrefs(index) / 1000;
-      num duration = getDurationFromSharedPrefs(index) / 60;
+      num duration = (getDurationFromSharedPrefs(index) / 60).round();
       carouselData
           .add({'index': index, 'distance': distance, 'duration': duration});
     }
@@ -51,18 +51,15 @@ class _HospitalMapState extends State<HospitalMap> {
     // Generate the list of carousel widgets
     carouselItems = List<Widget>.generate(
         hospitals.length,
-            (index) =>
-            carouselCard(carouselData[index]['index'],
-                carouselData[index]['distance'],
-                carouselData[index]['duration']));
+        (index) => carouselCard(carouselData[index]['index'],
+            carouselData[index]['distance'], carouselData[index]['duration']));
 
     // initialize map symbols in the same order as carousel widgets
     _kHospitalList = List<CameraPosition>.generate(
         hospitals.length,
-            (index) =>
-            CameraPosition(
-                target: getLatLngFromHospitalData(carouselData[index]['index']),
-                zoom: 15));
+        (index) => CameraPosition(
+            target: getLatLngFromHospitalData(carouselData[index]['index']),
+            zoom: 15));
   }
 
   _addSourceAndLineLayer(int index, bool removeLayer) async {
@@ -131,73 +128,53 @@ class _HospitalMapState extends State<HospitalMap> {
         child: Stack(
           children: [
             SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 7,
+              height: MediaQuery.of(context).size.height * 7,
               child: MapboxMap(
                 accessToken:
-                "sk.eyJ1Ijoid2VsbHlhZGl0YW1hIiwiYSI6ImNsajR1dnJpNjA1bHYzcW81dmNtanRxcWgifQ.dk5MPF-PHkGBI5WIvUnZOA",
+                    "sk.eyJ1Ijoid2VsbHlhZGl0YW1hIiwiYSI6ImNsajR1dnJpNjA1bHYzcW81dmNtanRxcWgifQ.dk5MPF-PHkGBI5WIvUnZOA",
                 initialCameraPosition: _initialCameraPosition,
                 onMapCreated: _onMapCreated,
                 onStyleLoadedCallback: _onStyleLoadedCallback,
                 myLocationEnabled: true,
                 myLocationTrackingMode: MyLocationTrackingMode.TrackingGPS,
-                minMaxZoomPreference: const MinMaxZoomPreference(14, 100),
+                minMaxZoomPreference: const MinMaxZoomPreference(14, 50),
               ),
             ),
-            // CarouselSlider(
-            //   items: carouselItems,
-            //   options: CarouselOptions(
-            //     height: 100,
-            //     viewportFraction: 0.6,
-            //     initialPage: 0,
-            //     enableInfiniteScroll: false,
-            //     scrollDirection: Axis.horizontal,
-            //     onPageChanged:
-            //         (int index, CarouselPageChangedReason reason) async {
-            //       setState(() {
-            //         pageIndex = index;
-            //       });
-            //       _addSourceAndLineLayer(index, true);
-            //     },
-            //   ),
-            // ),
-
             CarouselSlider.builder(
-                itemCount: hospitals.length,
-                itemBuilder: (context, index, realIndex) {
-                      int id2 = carouselData[index]['index'];
-                  return GestureDetector(
-
-                    onTap: () {
-                      print(id2);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            HospitalDetailScreen(
-                                hospital: listHospitals[id2])),
-                      );
-                    },
-                    child: carouselCard(carouselData[index]['index'],
-                        carouselData[index]['distance'],
-                        carouselData[index]['duration']),
-                  );
-                },
-                options: CarouselOptions(
-                  height: 100,
-                  viewportFraction: 0.6,
-                  initialPage: 0,
-                  enableInfiniteScroll: false,
-                  scrollDirection: Axis.horizontal,
-                  onPageChanged:
-                      (int index, CarouselPageChangedReason reason) async {
-                    setState(() {
-                      pageIndex = index;
-                    });
-                    _addSourceAndLineLayer(index, true);
+              itemCount: hospitals.length,
+              itemBuilder: (context, index, realIndex) {
+                int id2 = carouselData[index]['index'];
+                return GestureDetector(
+                  onTap: () {
+                    print(id2);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HospitalDetailScreen(
+                              hospital: listHospitals[id2])),
+                    );
                   },
-                ))
+                  child: carouselCard(
+                      carouselData[index]['index'],
+                      carouselData[index]['distance'],
+                      carouselData[index]['duration']),
+                );
+              },
+              options: CarouselOptions(
+                height: 100,
+                viewportFraction: 0.6,
+                initialPage: 0,
+                enableInfiniteScroll: false,
+                scrollDirection: Axis.horizontal,
+                onPageChanged:
+                    (int index, CarouselPageChangedReason reason) async {
+                  setState(() {
+                    pageIndex = index;
+                  });
+                  _addSourceAndLineLayer(index, true);
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -209,17 +186,5 @@ class _HospitalMapState extends State<HospitalMap> {
         child: const Icon(Icons.my_location),
       ),
     );
-
-    // }
-    //   return Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('Restaurants Map'),
-    //     ),
-    //     body: const SafeArea(
-    //       child: Center(
-    //         child: Text('Let\'s build something awesome 💪🏻'),
-    //       ),
-    //     ),
-    //   );
   }
 }
