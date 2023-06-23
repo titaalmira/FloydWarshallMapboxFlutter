@@ -174,6 +174,7 @@ List<String> daftarPoliteknikRSUDBrebes = [
   "Poliklinik Urologi",
   "Poliklinik Psikologi",
   "Poliklinik Gizi",
+  "Poliklinik Umum"
   "Poliklinik Fisioterapi dan Rehabilitasi Medik",
   "Poli Bedah Mulut dan Maksilofasial"
 ];
@@ -184,6 +185,7 @@ List<String> daftarPoliteknikRSISlamiMutiaraBunda = [
   "Politeknik Penyakit Dalam",
   "Politeknik Gigi dan Mulut",
   "Politeknik THT",
+  "Politeknik Umum"
   "Politeknik Bedah",
   "Politeknik Paru",
   "Politeknik Radiologi",
@@ -218,7 +220,7 @@ List<String> daftarPoliteknikRSBhaktiAsihBrebes = [
   "Politeknik Bedah Urologi",
   "Politeknik Jantung",
   "Politeknik Bedah Orthopedi",
-  "Politeknik Bedah Umum",
+  "Politeknik Umum",
   "Politeknik Saraf",
   "Politeknik Penyakit Dalam",
   "Politeknik Gigi",
@@ -227,16 +229,16 @@ List<String> daftarPoliteknikRSBhaktiAsihBrebes = [
 ];
 
 List<String> daftarPoliteknikRSAlamMedica = [
-  "Politeknik dan Penyakit Kandungan",
+  "Politeknik Kandungan dan Kebidanan",
   "Politeknik Penyakit Dalam",
   "Politeknik Tht",
-  "Politeknik KULIT DAN KELAMIN",
-  "Politeknik GIGI",
-  "Politeknik SARAF",
-  "Politeknik BEDAH",
-  "Politeknik ANAK",
-  "Politeknik JANTUNG DAN PEMBULUH DARAH",
-  "Politeknik RADIOLOGI"
+  "Politeknik Kulit dan Kelamin",
+  "Politeknik Gigi",
+  "Politeknik Syaraf",
+  "Politeknik Bedah",
+  "Politeknik Anak",
+  "Politeknik Jantung dan Pembuluh Darah",
+  "Politeknik Radiologi"
 ];
 
 List<String> daftarPoliteknikDedyJayaBrebes = [
@@ -251,7 +253,7 @@ List<String> daftarPoliteknikDedyJayaBrebes = [
   "Politeknik Mata",
   "Politeknik Ortopedi",
   "Politeknik Paru",
-  "Politeknik Saraf"
+  "Politeknik Syaraf"
 ];
 
 List<String> daftarPoliteknikRSSitiAsiyahBrebes = [
@@ -276,7 +278,7 @@ List<String> daftarPoliteknikRSAmanahMahmudahSitanggalBrebes = [
 
 List<String> dafarPoliteknikRSUDBumiayu = [
   "Politeknik Dalam",
-  "Politeknik Kandungan dan Kebidanan",
+  "Politeknik Kebidanan dan Kandungan",
   "Politeknik Anak",
   "Politeknik Bedah",
   "Politeknik Jantung dan Pembuluh Darah",
@@ -325,7 +327,37 @@ List<String> daftarPoliTeknikRSHarapanSehatJatibarang = [
   "Politeknik Gigi",
   "Politeknik Mata",
   "Politeknik Ortopedi",
-  "Politeknik Saraf"
+  "Politeknik Syaraf"
+];
+
+List<String> daftarKeperluan = [
+  "Umum",
+  "Gigi dan Mulut",
+  "Penyakit Dalam",
+  "Anak",
+  "Syaraf",
+  "Dokter Mata",
+  "Jantung",
+  "Pembuluh Darah",
+  "Paru-paru",
+  "Kebidanan dan Kandungan",
+  "Bedah",
+  "Jiwa",
+  "Kulit dan Kelamin",
+  "Gizi",
+  "Psikologi",
+  "THT",
+  "Radiologi",
+  "Bedah Tulang",
+  "Urologi",
+  "Rehab Medis",
+  "Anestesi",
+  "Ginjal dan Hipertensi",
+  "Obsgyn",
+  "MCU",
+  "Fisioterapi",
+  "Obgyn",
+  "Obsteri"
 ];
 
 List<Doctor> daftarDokterRSHarapanSehatJatibarang = [

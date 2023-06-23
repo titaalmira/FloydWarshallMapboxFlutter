@@ -1,190 +1,197 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:rute_rumah_sakit_brebes/screens/add_hospital_screen.dart';
+import 'package:rute_rumah_sakit_brebes/model/hospital_model.dart';
 import 'package:rute_rumah_sakit_brebes/screens/detail_hospital_screen.dart';
-import 'package:rute_rumah_sakit_brebes/screens/hospital_table.dart';
-import 'package:rute_rumah_sakit_brebes/screens/login_screen.dart';
+import 'package:rute_rumah_sakit_brebes/screens/direction_to_hospital_screen.dart';
 
 import '../constants/hospitals.dart';
-import '../helpers/commons.dart';
-import '../helpers/shared_prefs.dart';
-import '../widgets/carousel_card.dart';
 
-class FilterHospitalMap extends StatefulWidget {
-  const FilterHospitalMap({Key? key}) : super(key: key);
+class FilterHospitalScreen extends StatefulWidget {
+  final String value;
+
+  const FilterHospitalScreen({Key? key, required this.value}) : super(key: key);
 
   @override
-  State<FilterHospitalMap> createState() => _HospitalMapState();
+  State<FilterHospitalScreen> createState() => _RestaurantsTableState();
 }
 
-class _HospitalMapState extends State<FilterHospitalMap> {
-  // Mapbox related
-  LatLng latLng = getLatLngFromSharedPrefs();
-  late CameraPosition _initialCameraPosition;
-  late MapboxMapController controller;
-  late List<CameraPosition> _kHospitalList;
-  List<Map> carouselData = [];
+class _RestaurantsTableState extends State<FilterHospitalScreen> {
+  /// Add handlers to buttons later on
+  /// For call and maps we can use url_launcher package.
+  /// We can also create a turn-by-turn navigation for a particular restaurant.
+  /// 🔥 Let's look at it in the next video!!
 
-  // Carousel related
-  int pageIndex = 0;
-  bool accessed = false;
-  late List<Widget> carouselItems;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initialCameraPosition = CameraPosition(target: latLng, zoom: 15);
-
-    // Calculate the distance and time from data in SharedPreferences
-    for (int index = 0; index < hospitals.length; index++) {
-      num distance = getDistanceFromSharedPrefs(index) / 1000;
-      num duration = (getDurationFromSharedPrefs(index) / 60).round();
-      carouselData
-          .add({'index': index, 'distance': distance, 'duration': duration});
-    }
-    carouselData.sort((a, b) => a['duration'] < b['duration'] ? 0 : 1);
-
-    // Generate the list of carousel widgets
-    carouselItems = List<Widget>.generate(
-        hospitals.length,
-        (index) => carouselCard(carouselData[index]['index'],
-            carouselData[index]['distance'], carouselData[index]['duration']));
-
-    // initialize map symbols in the same order as carousel widgets
-    _kHospitalList = List<CameraPosition>.generate(
-        hospitals.length,
-        (index) => CameraPosition(
-            target: getLatLngFromHospitalData(carouselData[index]['index']),
-            zoom: 15));
-  }
-
-  _addSourceAndLineLayer(int index, bool removeLayer) async {
-    // Can animate camera to focus on the item
-    controller
-        .animateCamera(CameraUpdate.newCameraPosition(_kHospitalList[index]));
-
-    // Add a polyLine between source and destination
-    Map geometry = getGeometryFromSharedPrefs(carouselData[index]['index']);
-    final _fills = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "id": 0,
-          "properties": <String, dynamic>{},
-          "geometry": geometry,
-        },
-      ],
-    };
-
-    // Remove lineLayer and source if it exists
-    if (removeLayer == true) {
-      await controller.removeLayer("lines");
-      await controller.removeSource("fills");
-    }
-
-    // Add new source and lineLayer
-    await controller.addSource("fills", GeojsonSourceProperties(data: _fills));
-    await controller.addLineLayer(
-      "fills",
-      "lines",
-      LineLayerProperties(
-        lineColor: Colors.green.toHexStringRGB(),
-        lineCap: "round",
-        lineJoin: "round",
-        lineWidth: 2,
+  Widget cardButtons(IconData iconData, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(5),
+          minimumSize: Size.zero,
+        ),
+        child: Row(
+          children: [
+            Icon(iconData, size: 16),
+            const SizedBox(width: 2),
+            Text(label)
+          ],
+        ),
       ),
     );
   }
 
-  _onMapCreated(MapboxMapController controller) async {
-    this.controller = controller;
-  }
+  late List<Hospital> filteredList;
 
-  _onStyleLoadedCallback() async {
-    for (CameraPosition _kRestaurant in _kHospitalList) {
-      await controller.addSymbol(
-        SymbolOptions(
-          geometry: _kRestaurant.target,
-          iconSize: 0.2,
-          iconImage: "assets/icon/hospital3.png",
-        ),
-      );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    filteredList = listHospitals.where(
+      (element) {
+        return element.politeknik
+            .any((element) => element.contains(widget.value));
+      },
+    ).toList();
+
+    print(filteredList.length);
+
+    for (var i = 0; i < filteredList.length; i++) {
+      print(filteredList[i].name);
     }
-    _addSourceAndLineLayer(0, false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Peta Rumah Sakit'),
+        title: Text('Daftar Rumah Sakit'),
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 7,
-              child: MapboxMap(
-                accessToken:
-                    "sk.eyJ1Ijoid2VsbHlhZGl0YW1hIiwiYSI6ImNsajR1dnJpNjA1bHYzcW81dmNtanRxcWgifQ.dk5MPF-PHkGBI5WIvUnZOA",
-                initialCameraPosition: _initialCameraPosition,
-                onMapCreated: _onMapCreated,
-                onStyleLoadedCallback: _onStyleLoadedCallback,
-                myLocationEnabled: true,
-                myLocationTrackingMode: MyLocationTrackingMode.TrackingGPS,
-                minMaxZoomPreference: const MinMaxZoomPreference(14, 50),
+          child: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // const CupertinoTextField(
+              //   prefix: Padding(
+              //     padding: EdgeInsets.only(left: 15),
+              //     child: Icon(Icons.search),
+              //   ),
+              //   padding: EdgeInsets.all(15),
+              //   placeholder: 'Cari Rumah Sakit',
+              //   style: TextStyle(color: Colors.white),
+              //   decoration: BoxDecoration(
+              //     color: Colors.black54,
+              //     borderRadius: BorderRadius.all(Radius.circular(5)),
+              //   ),
+              // ),
+              const SizedBox(height: 5),
+              Text(
+                "Daftar Rumah Sakit dengan Keperluan " + widget.value,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-            CarouselSlider.builder(
-              itemCount: hospitals.length,
-              itemBuilder: (context, index, realIndex) {
-                int id2 = carouselData[index]['index'];
-                return GestureDetector(
-                  onTap: () {
-                    print(id2);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HospitalDetailScreen(
-                              hospital: listHospitals[id2])),
-                    );
-                  },
-                  child: carouselCard(
-                      carouselData[index]['index'],
-                      carouselData[index]['distance'],
-                      carouselData[index]['duration']),
-                );
-              },
-              options: CarouselOptions(
-                height: 100,
-                viewportFraction: 0.6,
-                initialPage: 0,
-                enableInfiniteScroll: false,
-                scrollDirection: Axis.horizontal,
-                onPageChanged:
-                    (int index, CarouselPageChangedReason reason) async {
-                  setState(() {
-                    pageIndex = index;
-                  });
-                  _addSourceAndLineLayer(index, true);
+              const SizedBox(
+                height: 16,
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: filteredList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CachedNetworkImage(
+                          height: 300,
+                          width: 120,
+                          fit: BoxFit.cover,
+                          imageUrl: filteredList[index].pictureUrl,
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 300,
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  filteredList[index].name,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                Text(filteredList[index].address),
+                                const Spacer(),
+                                ListTile(
+                                  leading: Icon(Icons.calendar_today),
+                                  contentPadding: EdgeInsets.all(4.0),
+                                  title: Column(
+                                    children: [
+                                      Text('Hari Buka'),
+                                    ],
+                                  ),
+                                  subtitle: Column(
+                                    children: [
+                                      Text(filteredList[index].openingDays),
+                                      Text(
+                                          "${filteredList[index].openingTime} - ${filteredList[index].closingTime}")
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HospitalDetailScreen(
+                                                      hospital:
+                                                          filteredList[index])),
+                                        );
+                                      },
+                                      child: Text("Detail"),
+                                    ),
+                                    Spacer(),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DirectionToHospitalScreen(nama: filteredList[index].name, lat: filteredList[index].latitude, long: filteredList[index].longitude, ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text("Rute"),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
                 },
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          controller.animateCamera(
-              CameraUpdate.newCameraPosition(_initialCameraPosition));
-        },
-        child: const Icon(Icons.my_location),
-      ),
+      )),
     );
   }
 }

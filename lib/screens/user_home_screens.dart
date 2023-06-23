@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rute_rumah_sakit_brebes/constants/hospitals.dart';
 import 'package:rute_rumah_sakit_brebes/screens/login_screen.dart';
 import 'package:rute_rumah_sakit_brebes/screens/map_guide_screens.dart';
 
+import 'filter_hospital_map.dart';
 import 'hospital_map.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,94 +16,89 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/icon/hospital3.png',
-              width: 30,
-              height: 30,
-            ),
-            SizedBox(width: 8),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                children: [
-                  TextSpan(text: 'Home Daftar'),
-                  TextSpan(
-                    text: 'Rumah Sakit',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  TextSpan(text: ' di Brebes'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Expanded(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.all(16),
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      children: [
-                        DashboardCard(
-                          name: 'Jumlah Rumah Sakit',
-                          value: '13',
-                          icon: Icons.local_hospital,
-                        ),
-                        DashboardCard(
-                          name: 'Jumlah Doktor',
-                          value: '86',
-                          icon: Icons.people,
-                        ),
-                        DashboardCard(
-                          name: 'Jumlah Pengguna',
-                          value: '15',
-                          icon: Icons.person,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Redirect to Search Nearest Hospital screen
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HospitalMap()),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Expanded(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.75,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    SizedBox(height: 16,),
+                    Image.asset("assets/icon/hospital3.png", height: 60,),
+                    
+
+                    SizedBox(height: 16,),
+                    Text("Aplikasi Pencarian Rute Terdekat Rumah Sakit di Brebes",textAlign: TextAlign.center, style: TextStyle(fontSize: 20),),
+                    SizedBox(height: 40,),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Daftar Keperluan : ',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: daftarKeperluan.length,
+                          itemBuilder: (context, index) {
+                            final String doctor = daftarKeperluan[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FilterHospitalScreen( value: daftarKeperluan[index],)),
+                                  );
+                                },
+                                child: ListTile(
+                                  title: Text("-   $doctor"),
+                                ),
+                              ),
                             );
                           },
-                          child: Text('Cari Rumah Sakit Terdekat'),
                         ),
-                        SizedBox(height: 8),
-
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Redirect to Search Nearest Hospital screen
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HospitalMap()),
+                              );
+                            },
+                            child: Text('Cari Rumah Sakit Terdekat'),
+                          ),
+                          SizedBox(height: 8),
+
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

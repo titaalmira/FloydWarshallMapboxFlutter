@@ -12,11 +12,14 @@ class HospitalDetailScreen extends StatefulWidget {
 }
 
 class _HospitalDetailScreenState extends State<HospitalDetailScreen> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hospital Details'),
+        title: Text('Detail Rumah Sakit'),
       ),
       body: SingleChildScrollView(
         child: Column(
