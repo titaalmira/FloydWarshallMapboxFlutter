@@ -121,9 +121,9 @@ class _HospitalMapState extends State<HospitalMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Peta Rumah Sakit'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Peta Rumah Sakit'),
+      // ),
       body: SafeArea(
         child: Stack(
           children: [
